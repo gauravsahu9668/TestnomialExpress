@@ -32,3 +32,8 @@ app.get('/',async(req,res)=>{
 app.listen(PORT,()=>{
     console.log(`app is running at port ${PORT}`)
 })
+app.get('/getitems',async(req,res)=>{
+    return req.json({
+        message:"here we go"
+    })
+})
