@@ -1,6 +1,6 @@
 const express=require("express")
 const app=express()
-const mailsender=require('./mailsender')
+const mailsender=require('../mailsender')
 require("dotenv").config()
 app.use(express.json())
 const cors=require('cors')
