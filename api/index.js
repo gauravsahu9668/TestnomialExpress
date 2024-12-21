@@ -34,7 +34,7 @@ app.listen(PORT,()=>{
 })
 app.get('/getitems',async(req,res)=>{
     try{
-        return c.json({
+        return req.json({
             message:"ye bhi ho gya",
             success:true,
         })
