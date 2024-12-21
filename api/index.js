@@ -33,7 +33,15 @@ app.listen(PORT,()=>{
     console.log(`app is running at port ${PORT}`)
 })
 app.get('/getitems',async(req,res)=>{
-    return req.json({
-        message:"here we go"
-    })
+    try{
+        return c.json({
+            message:"ye bhi ho gya",
+            success:true,
+        })
+    }catch(e){
+        return c.json({
+            success:false,
+            message:"Yha tk bhi a gye"
+        })
+    }
 })
