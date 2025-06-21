@@ -4,9 +4,10 @@ const mailsender=require('../mailsender')
 require("dotenv").config()
 app.use(express.json())
 const cors=require('cors')
+const crypto=require('crypto')
 const PORT=process.env.PORT || 4000
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:"http://localhost:5173",
     credentials:true,
 }))
 app.post('/send-email',async(req,res)=>{
@@ -38,3 +39,52 @@ app.get('/getitems',async(req,res)=>{
             success:true,
         })
 })
+const {instance}=require('../controller/razorpay')
+app.post('/create-order', async (req, res) => {
+    try {
+        const {amount,userId}= req.body
+        const options = {
+            amount: amount*100, // Amount in paise (₹100)
+            currency: 'INR',
+            receipt: Date.now().toString(),
+            notes: {
+            userId,
+            }
+        };
+        const payment = await instance.orders.create(options);
+        return res.status(200).json({
+                success: true,
+                orderid: payment.id,  // use `id`, not `_id`
+                currency: payment.currency,
+                amount: payment.amount
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Order creation failed');
+    }
+});
+app.post('/verifyPayment', async (req, res) => {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature,userId} = req.body;
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSignature = crypto.createHmac("sha256", "JBKfxznCBECiXh4a3LiCDcjr")
+        expectedSignature.update(body.toString())
+        const digest=expectedSignature.digest("hex");
+        if(razorpay_signature===digest){
+            return res.status(200).json({
+                success: true,
+                message:"payement verify successfully"
+            });
+        }
+        else{
+            return res.json({
+                success:false,
+                message:"get some error"
+            })
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Order creation failed');
+    }
+});
+
