@@ -88,37 +88,6 @@ app.post('/verifyPayment', async (req, res) => {
         res.status(500).send('Order creation failed');
     }
 });
-const apiKey = 'AIzaSyAwG5Ns9RC3dpa6rODXOMGdaXt1k84yNqI';
-const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-app.post('/generateText',async(req,res)=>{
-    const {text}=req.body
-    const data = {
-     contents: [
-      {
-        parts: [
-        {
-          text: `${text} in 40 words`
-        }
-      ]
-      }
-     ]
-    };
-          axios.post(url, data, {
-        headers: {
-        'Content-Type': 'application/json'
-         }
-        })
-         .then(response => {
-         return res.json({
-            success:true,
-            text:response.data.candidates[0].content.parts[0].text
-         })
-        })
-       .catch(error => {
-        return res.json({
-            success:false,
-            error:error
-        })
-        });
-})
+
+
 
